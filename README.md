@@ -22,7 +22,7 @@
 * Consider how the app might support updating the view as the data in the database updates, without requiring a page refresh.
 
 # Credits & disclaimers
-* I based the SVG rendering on a previous project of mine.
+* I based the SVG rendering on a [previous project](https://github.com/miguelpacha/majesties) of mine.
 * I used the Civides colormap described in this article:
 [Nuñez JR, Anderton CR, Renslow RS. Optimizing colormaps with consideration for color vision deficiency to enable accurate interpretation of scientific data. PLoS One. 2018 Aug 1;13(7):e0199239. doi: 10.1371/journal.pone.0199239. PMID: 30067751; PMCID: PMC6070163.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6070163/)
 * Whenever I got too much inspiration from the internet there is a comment with a link.
