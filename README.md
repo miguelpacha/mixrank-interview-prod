@@ -1,33 +1,29 @@
 # Overview
+* Run `nix-shell default.nix --command "uvicorn py.compmatrix.api:app"`.
+* The client will be served at http://127.0.0.1:8000/web/home.htm
+# Implementation notes
+* The API is implemented with FastAPI and SQLAlchemy.
+* I have chosen to serve a static website with nothing but vanilla JS to power it.
+* The graphs are drawn with the SVG Web API.
+* The graph plot is still a bit rough and the website is ugly and not responsive, but it works.
+* The plot uses the Cividis color map for shading the cells. See credits at the end of this file.
+* There are two nix files: 
+    * default.nix only has what is needed for serving the app. I have tested it.
+    * dev.nix has the dependencies I used while exploring the problem. HOWEVER I have not managed to run it on my machine due to this [issue](https://github.com/jupyterlab/jupyterlab/issues/9863#issuecomment-911868770) so I used my local environment for that.
+* There are two jupyter notebooks documenting my thought process (but they're messy).
+# Known issues, to-dos, talking points
+* The API endpoints aren't properly documented and the code has zero test coverage.
+* The labels for the graph are sometimes too big and overlap. (Fix: either dynamic font sizing, or rotating, or line breaks.)
+* Clicking on a cell with zero apps will not produce examples and throw a console error. (Fix: explicitly catch this error.)
+* The example API is hardcoded to provide 5 apps (fix: add parameter)
+* The SQLAlchemy queries could do with some tidying up and optimizing. There are some repeated chunks of code.
+* The front end code is just one  big file, which is a bit too long. It could be better organized.
+* Discuss the bottlenecks as you scale up to a larger dataset (1e5 `sdk`s, 1e7 `app`'s, and 1e9 `app_sdk`'s).  
+* Consider how the app might support updating the view as the data in the database updates, without requiring a page refresh.
 
-The goal of this project is to build a web app to render competitive matrices in a browser:
-
-![Payments Competitive Matrix](payments-attrition-matrix.png "Payments Competitive Matrix")
-
-This matrix was generated from a sample of apps that use Stripe, PayPal, or Braintree for payments, or none of the above.
-
-Examples of facts we can read from this matrix:
-* Stripe has 10,572 apps currently using their SDK (of the sampled apps)
-* PayPal has 11,892 apps currently using their SDK
-* Stripe churned 22 customers to PayPal
-* Stripe churned 8,082 customers to another solution not covered in this matrix
-* PayPal acquired 11,844 app integrations from another solution not covered in this matrix
-* 879,587 apps from the sample haven't integrated any of these three payments SDKs
-
-This matrix was generated using matplotlib. We'd like to add a similar matrix into our web-based product, but matplotlib isn't a good solution because the images it generates aren't interactive. We'd prefer a solution that was rendered client-side.
-
-# Objectives
-
-* Please build an API in Python that serves requests using the data in the SQlite file in this repository.
-* The client should render a competitive matrix similar in spirit to the example above.
-* Consider shading the cells according to magnitude.
-* Allow the user to select a set of SDKs to include in the matrix, and re-render as they change their selection.
-* Allow the user to view example apps for a cell of the matrix they select.
-* Compute a normalized matrix (by row) to better visualize retention and attrition rates. Ex: ![Normalized Payments Matrix](payments-norm-matrix.png "Normalized Payments Matrix")
-* Be prepared to discuss the bottlenecks as you scale up to a larger dataset (1e5 `sdk`s, 1e7 `app`'s, and 1e9 `app_sdk`'s).  Will your implementation still perform well? What would you have to change to improve performance? You don't need to implement all the optimizations, but be able to talk about the next steps to scale it for production.
-* Consider how the app might support updating the view as the data in the database updates, without requiring a page refresh. You don't have to implement this, but keep it in mind for discussion.
-* We use [Nix](https://nixos.org/nix/) for package management. If you add your dependencies to `default.nix`, then it's easy for us to run your code. Install nix and launch the environment with `nix-shell` (works on Linux, macOS, and most unixes).
-
-Feel free to complete as much or as little of the project as you'd like. Spare your time from implementing features that would be time consuming or uninteresting, and focus instead on parts that would make for better discussion when reviewing together. Make notes of ideas, bugs, and deficiencies to discuss together.
-
-There's no time limit. Spend as much or as little time on it as you'd like. Clone this git repository (don't fork), and push to a new repository when you're ready to share. We'll schedule a follow-up call to review.
+# Credits & disclaimers
+* I based the SVG rendering on a previous project of mine.
+* I used the Civides colormap described in this article:
+[Nuñez JR, Anderton CR, Renslow RS. Optimizing colormaps with consideration for color vision deficiency to enable accurate interpretation of scientific data. PLoS One. 2018 Aug 1;13(7):e0199239. doi: 10.1371/journal.pone.0199239. PMID: 30067751; PMCID: PMC6070163.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6070163/)
+* Whenever I got too much inspiration from the internet there is a comment with a link.
+* I did take a look at Omar Faruk Riyad's [solution](https://github.com/omfriyad/mixrank-interview/). I haven't copied or tested it though.
